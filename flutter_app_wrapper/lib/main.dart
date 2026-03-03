@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:web_2/web_2.dart';
+import 'package:game/game.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,28 +18,26 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const MyHomePage(),
-      routes: {
-        '/web2.0': (context) => const Web2View(),
-        '/game': (context) => const GameView(),
-      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+/// Home page with two buttons that push routes with animations.
+class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  String _currentView = 'web2.0';
-
-  void _navigateToView(String view) {
-    setState(() {
-      _currentView = view;
-    });
+  Route _buildRoute(Widget page) {
+    return PageRouteBuilder(
+      pageBuilder: (_, animation, __) => page,
+      transitionsBuilder: (_, animation, __, child) {
+        // slide from right with ease-in-out curve
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+        final tween = Tween(begin: begin, end: end)
+            .chain(CurveTween(curve: Curves.easeInOut));
+        return SlideTransition(position: animation.drive(tween), child: child);
+      },
+    );
   }
 
   @override
@@ -47,62 +47,27 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text('menu'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () => _navigateToView('web2.0'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _currentView == 'web2.0'
-                        ? Theme.of(context).colorScheme.primary
-                        : Colors.grey,
-                  ),
-                  child: const Text('web2.0'),
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: () => _navigateToView('game'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _currentView == 'game'
-                        ? Theme.of(context).colorScheme.primary
-                        : Colors.grey,
-                  ),
-                  child: const Text('game'),
-                ),
-              ],
-            ),
+          IconButton(
+            tooltip: 'Web 2.0',
+            icon: const Icon(Icons.public),
+            onPressed: () {
+              Navigator.of(context).push(_buildRoute(const Web2View()));
+            },
+          ),
+          IconButton(
+            tooltip: 'Game',
+            icon: const Icon(Icons.videogame_asset),
+            onPressed: () {
+              Navigator.of(context).push(_buildRoute(const GameView()));
+            },
           ),
         ],
       ),
-      body: _currentView == 'web2.0' ? const Web2View() : const GameView(),
-    );
-  }
-}
-
-class Web2View extends StatelessWidget {
-  const Web2View({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'hello world',
-        style: TextStyle(fontSize: 32),
-      ),
-    );
-  }
-}
-
-class GameView extends StatelessWidget {
-  const GameView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'game',
-        style: TextStyle(fontSize: 32),
+      body: const Center(
+        child: Text(
+          'Select an app from the menu above',
+          style: TextStyle(fontSize: 18),
+        ),
       ),
     );
   }
