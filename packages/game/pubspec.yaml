@@ -10,6 +10,8 @@ dependencies:
     sdk: flutter
   core:
     path: ../core
+  markdown_view:
+    path: ../markdown_view
 
   cupertino_icons: ^1.0.0
 

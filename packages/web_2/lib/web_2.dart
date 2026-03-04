@@ -1,30 +1,83 @@
 library web_2;
 
-import 'package:flutter/material.dart';
-import 'package:core/core.dart';
+import 'dart:convert';
 
-/// A simple scaffold representing the Web 2.0 body.
-class Web2View extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:markdown_view/markdown_view.dart';
+
+/// A scaffold representing the Web 2.0 body with a list of markdown files on the left and the selected content on the right.
+class Web2View extends StatefulWidget {
   const Web2View({super.key});
+
+  @override
+  State<Web2View> createState() => _Web2ViewState();
+}
+
+class _Web2ViewState extends State<Web2View> {
+  List<String> markdownFiles = [];
+  String selectedFile = 'assets/vault/MDs/IDEA_TEMPLATE.md';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFiles();
+  }
+
+  Future<void> _loadFiles() async {
+    final manifestContent = await rootBundle.loadString('AssetManifest.json');
+    final Map<String, dynamic> manifestMap = json.decode(manifestContent);
+    setState(() {
+      markdownFiles = manifestMap.keys
+          .where((key) =>
+              key.startsWith('assets/vault/MDs/') && key.endsWith('.md'))
+          .toList();
+      if (markdownFiles.isNotEmpty && !markdownFiles.contains(selectedFile)) {
+        selectedFile = markdownFiles.first;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              CoreUtils.welcomeMessage(),
-              style: const TextStyle(fontSize: 24),
+      body: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: ListView.builder(
+              itemCount: markdownFiles.length,
+              itemBuilder: (context, index) {
+                final file = markdownFiles[index];
+                final fileName = file.split('/').last;
+                return ListTile(
+                  title: Text(fileName),
+                  selected: file == selectedFile,
+                  onTap: () {
+                    setState(() {
+                      selectedFile = file;
+                    });
+                  },
+                );
+              },
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'Web 2.0 Scaffold',
-              style: TextStyle(fontSize: 32),
+          ),
+          Expanded(
+            flex: 2,
+            child: FutureBuilder<String>(
+              future: rootBundle.loadString(selectedFile),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else {
+                  return MarkdownDisplay(markdownText: snapshot.data ?? '');
+                }
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
