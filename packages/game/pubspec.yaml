@@ -1,0 +1,17 @@
+name: game
+description: "Game scaffold package depending on core."
+version: 0.1.0
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  core:
+    path: ../core
+
+  cupertino_icons: ^1.0.0
+
+flutter:
+  # no assets yet
