@@ -1,7 +1,5 @@
 library web_2;
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:markdown_view/markdown_view.dart';
@@ -25,10 +23,11 @@ class _Web2ViewState extends State<Web2View> {
   }
 
   Future<void> _loadFiles() async {
-    final manifestContent = await rootBundle.loadString('AssetManifest.json');
-    final Map<String, dynamic> manifestMap = json.decode(manifestContent);
+    final AssetManifest manifest =
+        await AssetManifest.loadFromAssetBundle(rootBundle);
+    final List<String> allAssets = manifest.listAssets();
     setState(() {
-      markdownFiles = manifestMap.keys
+      markdownFiles = allAssets
           .where((key) =>
               key.startsWith('assets/vault/MDs/') && key.endsWith('.md'))
           .toList();
