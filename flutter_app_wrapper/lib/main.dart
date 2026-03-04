@@ -33,8 +33,10 @@ class MyHomePage extends StatelessWidget {
         // slide from right with ease-in-out curve
         const begin = Offset(1.0, 0.0);
         const end = Offset.zero;
-        final tween = Tween(begin: begin, end: end)
-            .chain(CurveTween(curve: Curves.easeInOut));
+        final tween = Tween(
+          begin: begin,
+          end: end,
+        ).chain(CurveTween(curve: Curves.easeInOut));
         return SlideTransition(position: animation.drive(tween), child: child);
       },
     );
@@ -44,24 +46,27 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('menu'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        actions: [
-          IconButton(
-            tooltip: 'Web 2.0',
-            icon: const Icon(Icons.public),
-            onPressed: () {
-              Navigator.of(context).push(_buildRoute(const Web2View()));
-            },
-          ),
-          IconButton(
-            tooltip: 'Game',
-            icon: const Icon(Icons.videogame_asset),
-            onPressed: () {
-              Navigator.of(context).push(_buildRoute(const GameView()));
-            },
-          ),
-        ],
+        centerTitle: false,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              tooltip: 'Web 2.0',
+              icon: const Icon(Icons.public),
+              onPressed: () {
+                Navigator.of(context).push(_buildRoute(const Web2View()));
+              },
+            ),
+            IconButton(
+              tooltip: 'Game',
+              icon: const Icon(Icons.videogame_asset),
+              onPressed: () {
+                Navigator.of(context).push(_buildRoute(const GameView()));
+              },
+            ),
+          ],
+        ),
       ),
       body: const Center(
         child: Text(
