@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:web_2/web_2.dart';
 import 'package:game/game.dart';
+import 'package:we_the_people/we_the_people.dart';
 
 void main() {
   runApp(const MyApp());
@@ -63,6 +64,13 @@ class MyHomePage extends StatelessWidget {
               icon: const Icon(Icons.videogame_asset),
               onPressed: () {
                 Navigator.of(context).push(_buildRoute(const GameView()));
+              },
+            ),
+            IconButton(
+              tooltip: 'We the People',
+              icon: const Icon(Icons.people),
+              onPressed: () {
+                Navigator.of(context).push(_buildRoute(const WeThePeopleView()));
               },
             ),
           ],

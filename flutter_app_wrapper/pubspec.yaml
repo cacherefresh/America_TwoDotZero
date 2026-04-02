@@ -41,6 +41,8 @@ dependencies:
     path: ../packages/game
   markdown_view:
     path: ../packages/markdown_view
+  we_the_people:
+    path: ../packages/we_the_people
 
 dev_dependencies:
   flutter_test:
