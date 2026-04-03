@@ -1,0 +1,21 @@
+name: poe
+description: "P.O.E. - Peace On Earth, a world peace proposal inspired by Edgar Allan Poe."
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  core:
+    path: ../core
+  markdown_view:
+    path: ../markdown_view
+  url_launcher: ^6.1.0
+
+  cupertino_icons: ^1.0.0
+
+flutter:
+  # no assets yet
