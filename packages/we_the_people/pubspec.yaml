@@ -1,5 +1,5 @@
-name: game
-description: "Game scaffold package depending on core."
+name: we_the_people
+description: "We the People - a third party movement application."
 version: 0.1.0
 publish_to: none
 
