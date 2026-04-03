@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:web_2/web_2.dart';
 import 'package:game/game.dart';
 import 'package:we_the_people/we_the_people.dart';
+import 'package:poe/poe.dart';
 
 void main() {
   runApp(const MyApp());
@@ -71,6 +72,13 @@ class MyHomePage extends StatelessWidget {
               icon: const Icon(Icons.people),
               onPressed: () {
                 Navigator.of(context).push(_buildRoute(const WeThePeopleView()));
+              },
+            ),
+            IconButton(
+              tooltip: 'P.O.E.',
+              icon: const Icon(Icons.nature),
+              onPressed: () {
+                Navigator.of(context).push(_buildRoute(const POEView()));
               },
             ),
           ],

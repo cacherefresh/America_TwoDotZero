@@ -43,6 +43,8 @@ dependencies:
     path: ../packages/markdown_view
   we_the_people:
     path: ../packages/we_the_people
+  poe:
+    path: ../packages/poe
 
 dev_dependencies:
   flutter_test:
