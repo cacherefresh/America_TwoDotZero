@@ -1,5 +1,5 @@
-name: game
-description: "Game scaffold package depending on core."
+name: abe
+description: "A.B.E. - American Backlog Enhancement, a project tracking and management application."
 version: 0.1.0
 publish_to: none
 
@@ -11,9 +11,6 @@ dependencies:
     sdk: flutter
   core:
     path: ../core
-  markdown_view:
-    path: ../markdown_view
-  html: ^0.15.0
 
   cupertino_icons: ^1.0.0
 

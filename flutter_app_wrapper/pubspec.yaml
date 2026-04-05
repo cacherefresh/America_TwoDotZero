@@ -45,6 +45,8 @@ dependencies:
     path: ../packages/we_the_people
   poe:
     path: ../packages/poe
+  abe:
+    path: ../packages/abe
 
 dev_dependencies:
   flutter_test:

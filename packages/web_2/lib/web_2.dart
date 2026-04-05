@@ -39,45 +39,43 @@ class _Web2ViewState extends State<Web2View> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: [
-          Expanded(
-            flex: 1,
-            child: ListView.builder(
-              itemCount: markdownFiles.length,
-              itemBuilder: (context, index) {
-                final file = markdownFiles[index];
-                final fileName = file.split('/').last;
-                return ListTile(
-                  title: Text(fileName),
-                  selected: file == selectedFile,
-                  onTap: () {
-                    setState(() {
-                      selectedFile = file;
-                    });
-                  },
-                );
-              },
-            ),
+    return Row(
+      children: [
+        Expanded(
+          flex: 1,
+          child: ListView.builder(
+            itemCount: markdownFiles.length,
+            itemBuilder: (context, index) {
+              final file = markdownFiles[index];
+              final fileName = file.split('/').last;
+              return ListTile(
+                title: Text(fileName),
+                selected: file == selectedFile,
+                onTap: () {
+                  setState(() {
+                    selectedFile = file;
+                  });
+                },
+              );
+            },
           ),
-          Expanded(
-            flex: 2,
-            child: FutureBuilder<String>(
-              future: rootBundle.loadString(selectedFile),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else {
-                  return MarkdownDisplay(markdownText: snapshot.data ?? '');
-                }
-              },
-            ),
+        ),
+        Expanded(
+          flex: 2,
+          child: FutureBuilder<String>(
+            future: rootBundle.loadString(selectedFile),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                return MarkdownDisplay(markdownText: snapshot.data ?? '');
+              }
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

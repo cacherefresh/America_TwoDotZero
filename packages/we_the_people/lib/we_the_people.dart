@@ -8,21 +8,16 @@ class WeThePeopleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('We the People - Third Party'),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'We the People',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'We the People',
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 16),
@@ -138,7 +133,6 @@ class WeThePeopleView extends StatelessWidget {
             const SizedBox(height: 32),
           ],
         ),
-      ),
     );
   }
 }
