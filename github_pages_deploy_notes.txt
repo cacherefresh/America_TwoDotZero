@@ -1,0 +1,229 @@
+================================================================================
+AMERICA 2.0 - GITHUB PAGES DEPLOYMENT INSTRUCTIONS
+================================================================================
+Complete Step-by-Step Guide for Deploying to cacherefresh.io
+================================================================================
+
+PHASE 1: BUILD THE FLUTTER WEB APP
+================================================================================
+
+1. Navigate to flutter_app_wrapper
+   cd packages/flutter_app_wrapper
+
+2. Clean previous builds
+   flutter clean
+
+3. Get dependencies
+   flutter pub get
+
+4. Build for production (creates static site)
+   flutter build web --release
+
+   Output location: flutter_app_wrapper/build/web/
+
+================================================================================
+PHASE 2: DEPLOY TO GITHUB PAGES
+================================================================================
+
+CHOOSE ONE OF THESE THREE OPTIONS:
+
+OPTION A: Manual Deployment (Simple)
+------------------------------------
+# From repository root
+cd ../..
+
+# Create docs folder
+mkdir -p docs
+rm -rf docs/*
+cp -r flutter_app_wrapper/build/web/* docs/
+
+# Add CNAME file for custom domain
+echo "cacherefresh.io" > docs/CNAME
+
+# Commit and push
+git add docs/
+git commit -m "Deploy: America 2.0 application"
+git push origin main
+
+
+OPTION B: Use gh-pages Branch (Recommended)
+--------------------------------------------
+# From repository root
+git checkout --orphan gh-pages
+rm -rf .
+
+# Copy build
+cp -r flutter_app_wrapper/build/web/* ./
+echo "cacherefresh.io" > CNAME
+
+# Commit and push
+git add -A
+git commit -m "Deploy: America 2.0 application"
+git push origin gh-pages
+
+# Return to main
+git checkout main
+
+
+OPTION C: Automated Script
+---------------------------
+# Run deployment script
+./scripts/deploy.sh
+
+================================================================================
+PHASE 3: CONFIGURE GITHUB PAGES SETTINGS
+================================================================================
+
+1. Go to: Repository → Settings → Pages
+
+2. Under "Source", select:
+   - Branch: main (if using docs/) OR gh-pages (if using orphan branch)
+   - Folder: /docs (if main) OR / (if gh-pages)
+
+3. Under "Custom domain", enter: cacherefresh.io
+
+4. Check the box: "Enforce HTTPS"
+
+5. Click Save
+
+================================================================================
+PHASE 4: CONFIGURE GODADDY DNS
+================================================================================
+
+1. Log into GoDaddy Dashboard
+
+2. Go to Domains → Select cacherefresh.io
+
+3. Click Manage DNS
+
+4. ADD THESE A RECORDS (for apex domain):
+
+   Type: A  | Name: @  | Value: 185.199.108.153  | TTL: 600
+   Type: A  | Name: @  | Value: 185.199.109.153  | TTL: 600
+   Type: A  | Name: @  | Value: 185.199.110.153  | TTL: 600
+   Type: A  | Name: @  | Value: 185.199.111.153  | TTL: 600
+
+5. ADD THIS CNAME RECORD (for www subdomain):
+
+   Type: CNAME  | Name: www  | Value: cacherefresh.github.io  | TTL: 600
+
+6. Click Save
+
+================================================================================
+PHASE 5: VERIFY DEPLOYMENT
+================================================================================
+
+CHECK DNS PROPAGATION (Wait 15-48 hours):
+   dig cacherefresh.io A
+   
+   Expected: 4 GitHub IP addresses returned
+
+VERIFY GITHUB PAGES:
+   Visit in browser: https://cacherefresh.io
+
+VERIFICATION CHECKLIST:
+   [ ] App loads at https://cacherefresh.io
+   [ ] All 5 tabs visible (Web 2.0, Game, We the People, P.O.E., A.B.E.)
+   [ ] Navigation between tabs works
+   [ ] HTTPS padlock shows in browser
+   [ ] No console errors (F12)
+
+================================================================================
+FOR FUTURE UPDATES
+================================================================================
+
+After making code changes:
+
+1. Rebuild
+   cd packages/flutter_app_wrapper
+   flutter build web --release
+   cd ../..
+
+2. Redeploy (choose your method from Phase 2)
+
+   Using script:
+   ./scripts/deploy.sh
+
+   OR manually:
+   cp -r flutter_app_wrapper/build/web/* docs/
+   git add docs/
+   git commit -m "Update: [describe changes]"
+   git push origin main
+
+================================================================================
+QUICK REFERENCE
+================================================================================
+
+STEP                              | WHAT IT DOES
+----------------------------------+----------------------------------------------
+flutter build web --release       | Creates static HTML/JS/CSS site
+Copy to gh-pages/docs/            | Puts site where GitHub Pages hosts it
+Add CNAME                         | Tells GitHub to use your custom domain
+GitHub Pages Settings             | Configures GitHub to serve the site
+GoDaddy DNS                       | Points your domain to GitHub's servers
+dig cacherefresh.io               | Verifies DNS is working
+
+================================================================================
+KEY POINTS TO REMEMBER
+================================================================================
+
+✓ Build once, deploy many
+  - Build creates static files in build/web/
+
+✓ GitHub Pages = Free hosting
+  - No server needed
+
+✓ CNAME file is critical
+  - Tells GitHub which domain to use
+
+✓ DNS takes time
+  - Can take 15 minutes to 48 hours to propagate
+
+✓ HTTPS is automatic
+  - GitHub manages SSL certificates
+
+✓ Future updates are fast
+  - Just rebuild and push
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+Problem: DNS not resolving
+Solution: 
+  1. Wait 24-48 hours for full propagation
+  2. Clear local DNS cache: sudo dscacheutil -flushcache (macOS)
+  3. Verify GoDaddy DNS records are saved
+  4. Run: dig cacherefresh.io A
+
+Problem: GitHub Pages showing blank page
+Solution:
+  1. Verify CNAME file exists in build directory
+  2. Check GitHub Pages settings → Pages
+  3. Ensure index.html is in root of deployment directory
+  4. Check browser console for errors (F12)
+
+Problem: HTTPS not working
+Solution:
+  1. Ensure "Enforce HTTPS" is checked in GitHub Pages settings
+  2. Verify CNAME file content is correct
+  3. GitHub manages SSL certificates automatically
+  4. Wait 5-15 minutes after domain setup for certificate issuance
+
+================================================================================
+DEPLOYMENT COMPLETE!
+================================================================================
+
+Your America 2.0 app should now be live at: https://cacherefresh.io
+
+🚀 Congratulations! Your multi-tab Flutter application is deployed!
+
+Tabs available:
+  • Home (🏠)
+  • Web 2.0 (🌐)
+  • Game (🎮) - Guilds app embedded
+  • We the People (👥 ↔ 📜) - Animated
+  • P.O.E. (🕊️ ↔ 🐦‍⬛) - Animated
+  • A.B.E. (✓) - American Backlog Enhancement
+
+================================================================================
