@@ -1,10 +1,12 @@
 library game;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:html' as html;
 import 'dart:ui_web' as ui;
+import 'package:webview_flutter/webview_flutter.dart';
 
-/// A widget that loads the Guilds game from GitHub Pages in an iframe.
+/// A widget that loads the Guilds game from GitHub Pages.
 class GameView extends StatefulWidget {
   const GameView({super.key});
 
@@ -14,25 +16,33 @@ class GameView extends StatefulWidget {
 
 class _GameViewState extends State<GameView> {
   late String _iframeElementId;
+  late WebViewController _webViewController;
 
   @override
   void initState() {
     super.initState();
-    _iframeElementId = 'guilds-iframe-${DateTime.now().millisecondsSinceEpoch}';
-    _registerIframeElement();
+    
+    // Only initialize WebViewController on non-web platforms
+    if (!kIsWeb) {
+      _webViewController = WebViewController()
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..loadRequest(Uri.parse('https://guilds.cacherefresh.io/'));
+    } else {
+      // Register iframe for web platform
+      _iframeElementId = 'guilds-iframe-${DateTime.now().millisecondsSinceEpoch}';
+      _registerIframeElement();
+    }
   }
 
   void _registerIframeElement() {
-    // Create an iframe element that loads the Guilds game
     ui.platformViewRegistry.registerViewFactory(
       _iframeElementId,
       (int viewId) {
         final html.IFrameElement iframe = html.IFrameElement();
-        iframe.src = 'https://cacherefresh.github.io/Guilds/';
+        iframe.src = 'https://guilds.cacherefresh.io/';
         iframe.style.border = 'none';
         iframe.style.width = '100%';
         iframe.style.height = '100%';
-        iframe.allow = 'accelerometer; ambient-light-sensor; autoplay; battery; camera; display-capture; document-domain; encrypted-media; execution-while-not-rendered; execution-while-out-of-viewport; fullscreen; geolocation; gyroscope; magnetometer; microphone; midi; navigation-override; payment; picture-in-picture; publickey-credentials-get; speaker-selection; sync-xhr; usb; vr; xr-spatial-tracking; xr; clipboard-read; clipboard-write; gamepad; hid; idle-detection; serial; window-placement; screen-wake-lock; web-share';
         return iframe;
       },
     );
@@ -40,9 +50,14 @@ class _GameViewState extends State<GameView> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.expand(
-      child: HtmlElementView(viewType: _iframeElementId),
-    );
+    // Use WebViewWidget on mobile, iframe on web
+    if (kIsWeb) {
+      return SizedBox.expand(
+        child: HtmlElementView(viewType: _iframeElementId),
+      );
+    } else {
+      return WebViewWidget(controller: _webViewController);
+    }
   }
 }
 

@@ -1,0 +1,45 @@
+# America 2.0 Web Configuration
+# Centralized repository for all domain, subdomain, and app URLs
+
+domains:
+  main: cacherefresh.io
+  github_pages: cacherefresh.github.io
+  github_repo: github.com/cacherefresh
+
+subdomains:
+  game:
+    name: guilds
+    full_domain: guilds.cacherefresh.io
+  abe:
+    name: abe
+    full_domain: abe.cacherefresh.io
+
+apps:
+  game:
+    protocol: https
+    url: https://guilds.cacherefresh.io/
+    name: Guilds
+    description: "Game platform and interactive experiences"
+    
+  abe:
+    protocol: https
+    url: https://cacherefresh.github.io/American-Backlog-Enhancement/
+    fallback_url: https://abe.cacherefresh.io/
+    name: A.B.E.
+    description: "American Backlog Enhancement - Project tracking"
+    
+  peace_on_earth:
+    protocol: https
+    url: https://github.com/cacherefresh/Peace-On-Earth
+    name: Peace On Earth
+    description: "Peace initiative inspired by Edgar Allan Poe"
+
+web_2:
+  name: Web 2.0
+  description: "Markdown documentation viewer"
+  assets_path: assets/vault/MDs/
+
+home:
+  name: America 2.0
+  description: "A Third Party Movement Platform"
+  short_description: "Cache Refresh"
