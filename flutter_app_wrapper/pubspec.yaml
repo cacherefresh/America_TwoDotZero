@@ -48,6 +48,8 @@ dependencies:
     path: ../packages/poe
   abe:
     path: ../packages/abe
+  floating_peace_dove:
+    path: ../packages/floating_peace_dove
 
 dev_dependencies:
   flutter_test:

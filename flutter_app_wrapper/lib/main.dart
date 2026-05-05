@@ -4,6 +4,7 @@ import 'package:game/game.dart';
 import 'package:we_the_people/we_the_people.dart';
 import 'package:poe/poe.dart';
 import 'package:abe/abe.dart';
+import 'package:floating_peace_dove/floating_peace_dove.dart';
 import 'dart:async';
 
 void main() {
@@ -154,51 +155,57 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        centerTitle: false,
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              tooltip: 'Home',
-              icon: const Icon(Icons.home),
-              onPressed: () => _onNavButtonPressed(0),
-              isSelected: _selectedIndex == 0,
-            ),
-            IconButton(
-              tooltip: 'Web 2.0',
-              icon: const Icon(Icons.public),
-              onPressed: () => _onNavButtonPressed(1),
-              isSelected: _selectedIndex == 1,
-            ),
-            IconButton(
-              tooltip: 'Game',
-              icon: const Icon(Icons.videogame_asset),
-              onPressed: () => _onNavButtonPressed(2),
-              isSelected: _selectedIndex == 2,
-            ),
-            _AnimatedWTPIcon(
-              onPressed: () => _onNavButtonPressed(3),
-              isSelected: _selectedIndex == 3,
-            ),
-            _AnimatedPOEIcon(
-              onPressed: () => _onNavButtonPressed(4),
-              isSelected: _selectedIndex == 4,
-            ),
-            IconButton(
-              tooltip: 'A.B.E.',
-              icon: const Icon(Icons.checklist),
-              onPressed: () => _onNavButtonPressed(5),
-              isSelected: _selectedIndex == 5,
-            ),
-          ],
+    return WithFloatingPeaceDove(
+      moveInterval: const Duration(seconds: 4),
+      animationDuration: const Duration(milliseconds: 1000),
+      doveSize: 56.0,
+      opacity: 0.6,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          centerTitle: false,
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                tooltip: 'Home',
+                icon: const Icon(Icons.home),
+                onPressed: () => _onNavButtonPressed(0),
+                isSelected: _selectedIndex == 0,
+              ),
+              IconButton(
+                tooltip: 'Web 2.0',
+                icon: const Icon(Icons.public),
+                onPressed: () => _onNavButtonPressed(1),
+                isSelected: _selectedIndex == 1,
+              ),
+              IconButton(
+                tooltip: 'Game',
+                icon: const Icon(Icons.videogame_asset),
+                onPressed: () => _onNavButtonPressed(2),
+                isSelected: _selectedIndex == 2,
+              ),
+              _AnimatedWTPIcon(
+                onPressed: () => _onNavButtonPressed(3),
+                isSelected: _selectedIndex == 3,
+              ),
+              _AnimatedPOEIcon(
+                onPressed: () => _onNavButtonPressed(4),
+                isSelected: _selectedIndex == 4,
+              ),
+              IconButton(
+                tooltip: 'A.B.E.',
+                icon: const Icon(Icons.checklist),
+                onPressed: () => _onNavButtonPressed(5),
+                isSelected: _selectedIndex == 5,
+              ),
+            ],
+          ),
         ),
-      ),
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _pages,
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: _pages,
+        ),
       ),
     );
   }

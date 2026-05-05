@@ -1,0 +1,17 @@
+name: floating_peace_dove
+description: "A floating peace dove overlay widget that randomly moves across the screen."
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
