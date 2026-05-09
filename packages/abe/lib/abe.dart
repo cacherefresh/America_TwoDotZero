@@ -26,7 +26,7 @@ class _ABEViewState extends State<ABEView> {
     if (!kIsWeb) {
       _webViewController = WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
-        ..loadRequest(Uri.parse('https://cacherefresh.github.io/American-Backlog-Enhancement/'));
+        ..loadRequest(Uri.parse('https://raw.githubusercontent.com/cacherefresh/American-Backlog-Enhancement/sanctuary/README.md'));
     } else {
       // Register iframe for web platform
       _iframeElementId = 'abe-iframe-${DateTime.now().millisecondsSinceEpoch}';
@@ -39,7 +39,7 @@ class _ABEViewState extends State<ABEView> {
       _iframeElementId,
       (int viewId) {
         final html.IFrameElement iframe = html.IFrameElement();
-        iframe.src = 'https://cacherefresh.github.io/American-Backlog-Enhancement/';
+        iframe.src = 'https://raw.githubusercontent.com/cacherefresh/American-Backlog-Enhancement/sanctuary/README.md';
         iframe.style.border = 'none';
         iframe.style.width = '100%';
         iframe.style.height = '100%';

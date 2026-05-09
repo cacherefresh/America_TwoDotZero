@@ -1,11 +1,44 @@
 library poe;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:html' as html;
+import 'dart:ui_web' as ui;
 import 'package:url_launcher/url_launcher.dart';
 
-/// A landing page for P.O.E. - Peace On Earth initiative.
-class POEView extends StatelessWidget {
+/// A landing page for P.O.E. - Peace On Earth initiative with embedded GitHub repository view.
+class POEView extends StatefulWidget {
   const POEView({super.key});
+
+  @override
+  State<POEView> createState() => _POEViewState();
+}
+
+class _POEViewState extends State<POEView> {
+  late String _iframeElementId;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    // Register iframe for web platform
+    _iframeElementId = 'poe-iframe-${DateTime.now().millisecondsSinceEpoch}';
+    _registerIframeElement();
+  }
+
+  void _registerIframeElement() {
+    ui.platformViewRegistry.registerViewFactory(
+      _iframeElementId,
+      (int viewId) {
+        final html.IFrameElement iframe = html.IFrameElement();
+        iframe.src = 'https://raw.githubusercontent.com/cacherefresh/Peace-On-Earth/sanctuary/README.md';
+        iframe.style.border = 'none';
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        return iframe;
+      },
+    );
+  }
 
   Future<void> _launchURL(String url) async {
     if (!await launchUrl(Uri.parse(url))) {
@@ -179,6 +212,22 @@ class POEView extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 32),
+            const Divider(),
+            const SizedBox(height: 24),
+            const Text(
+              'Repository',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            if (kIsWeb)
+              SizedBox(
+                height: 500,
+                child: HtmlElementView(viewType: _iframeElementId),
+              ),
             const SizedBox(height: 32),
           ],
         ),
