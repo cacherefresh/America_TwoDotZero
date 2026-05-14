@@ -27,7 +27,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late final List<Widget> _pages = [
     const SizedBox.expand(child: Center(
       child: Text(
-        'Select an app from the menu above',
+        'Select an app from the menu above! \n\nUNDER CONSTRUCTION!, I\'m a one man show ^_~\n\n----------------------------------- \n\nDonations go a long way - 52% of all donations will go to resolving the actual problem. \n\nCould you IMAGINE AMERICA if every Political Candidate did this?\n\nWe would have every child fed, teachers paid well, AMAZING Infrastructure, the Border Walls of Troy, AND Free Healthcare, flying cars, etc etc... \n\n... but we got rallys, bumperstickers, ads, lawn ornaments of your favorite candidate and some half billion worth of political concerts.\n\n So I\'ll trendset and post receipts (give me time, I\'m human)',
         style: TextStyle(fontSize: 18),
       ),
     )),
@@ -147,6 +147,10 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: const Icon(Icons.checklist),
               onPressed: () => _onNavButtonPressed(5),
               isSelected: _selectedIndex == 5,
+            ),
+            Text(
+              'Donate: paypal.me/cacherefresh | cashapp: @cacherefresh',
+              style: TextStyle(fontSize: 18),
             ),
           ],
         ),
