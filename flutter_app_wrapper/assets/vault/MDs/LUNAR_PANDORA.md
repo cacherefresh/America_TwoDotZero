@@ -1,6 +1,11 @@
 # Lunar Helium-3 Mining & Deuterium-Helium-3 Fusion  
 **2026**
 
+## 0. Lunar Pandora
+No, not like Pandora's Box... but Greek 'Pandora', and a nod to Final Fantasy VIII.
+
+In Greek mythology, Pandora means "all-gifted" or "all-giving" (from the Greek words pan meaning "all" and doron meaning "gift"). She was the first mortal woman on Earth.
+
 ## 1. The Big Picture
 Helium-3 (He-3) mined from the Moon + Deuterium from seawater could provide **clean, safe, nearly unlimited fusion power** with **zero radioactive waste**. This is shaping up to be humanity’s next gold rush in space.
 
