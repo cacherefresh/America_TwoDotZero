@@ -1,0 +1,19 @@
+name: about
+description: "About - a window onto robertcoffman.cacherefresh.io."
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  core:
+    path: ../core
+  webview_flutter: ^4.4.0
+
+  cupertino_icons: ^1.0.0
+
+flutter:
+  # no assets yet

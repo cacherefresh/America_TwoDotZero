@@ -48,6 +48,8 @@ dependencies:
     path: ../packages/poe
   abe:
     path: ../packages/abe
+  about:
+    path: ../packages/about
 
 dev_dependencies:
   flutter_test:

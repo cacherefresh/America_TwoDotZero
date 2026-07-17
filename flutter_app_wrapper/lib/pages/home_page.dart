@@ -4,6 +4,7 @@ import 'package:game/game.dart';
 import 'package:we_the_people/we_the_people.dart';
 import 'package:poe/poe.dart';
 import 'package:abe/abe.dart';
+import 'package:about/about.dart';
 import '../widgets/animated_icons.dart';
 
 /// Home page with persistent navigation bar using IndexedStack.
@@ -22,7 +23,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 6;
 
   late final List<Widget> _pages = [
     const SizedBox.expand(child: Center(
@@ -36,6 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const WeThePeopleView(),
     const POEView(),
     const ABEView(),
+    const AboutView(),
   ];
 
   void _onNavButtonPressed(int index) {
@@ -147,6 +149,12 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: const Icon(Icons.checklist),
               onPressed: () => _onNavButtonPressed(5),
               isSelected: _selectedIndex == 5,
+            ),
+            IconButton(
+              tooltip: 'About',
+              icon: const Text('🪶', style: TextStyle(fontSize: 20)),
+              onPressed: () => _onNavButtonPressed(6),
+              isSelected: _selectedIndex == 6,
             ),
             const Spacer(),
             Flexible(
