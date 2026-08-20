@@ -1,21 +1,15 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-/// Animated icon for We the People that alternates between people and declaration of independence icons every 2 seconds.
-class AnimatedWTPIcon extends StatefulWidget {
-  final VoidCallback onPressed;
-  final bool isSelected;
-
-  const AnimatedWTPIcon({
-    required this.onPressed,
-    required this.isSelected,
-  });
+/// Glyph that alternates between people and declaration of independence icons every 2 seconds.
+class AnimatedWTPGlyph extends StatefulWidget {
+  const AnimatedWTPGlyph({super.key});
 
   @override
-  State<AnimatedWTPIcon> createState() => _AnimatedWTPIconState();
+  State<AnimatedWTPGlyph> createState() => _AnimatedWTPGlyphState();
 }
 
-class _AnimatedWTPIconState extends State<AnimatedWTPIcon> {
+class _AnimatedWTPGlyphState extends State<AnimatedWTPGlyph> {
   late Timer _timer;
   bool _showPeople = true;
 
@@ -37,33 +31,22 @@ class _AnimatedWTPIconState extends State<AnimatedWTPIcon> {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      tooltip: 'We the People',
-      icon: Text(
-        _showPeople ? '👥' : '📜',
-        style: const TextStyle(fontSize: 20),
-      ),
-      onPressed: widget.onPressed,
-      isSelected: widget.isSelected,
+    return Text(
+      _showPeople ? '👥' : '📜',
+      style: const TextStyle(fontSize: 20),
     );
   }
 }
 
-/// Animated icon for P.O.E. that alternates between peace dove and raven emojis every 2 seconds.
-class AnimatedPOEIcon extends StatefulWidget {
-  final VoidCallback onPressed;
-  final bool isSelected;
-
-  const AnimatedPOEIcon({
-    required this.onPressed,
-    required this.isSelected,
-  });
+/// Glyph that alternates between peace dove and raven emojis every 2 seconds.
+class AnimatedPOEGlyph extends StatefulWidget {
+  const AnimatedPOEGlyph({super.key});
 
   @override
-  State<AnimatedPOEIcon> createState() => _AnimatedPOEIconState();
+  State<AnimatedPOEGlyph> createState() => _AnimatedPOEGlyphState();
 }
 
-class _AnimatedPOEIconState extends State<AnimatedPOEIcon> {
+class _AnimatedPOEGlyphState extends State<AnimatedPOEGlyph> {
   late Timer _timer;
   bool _showDove = true;
 
@@ -85,14 +68,9 @@ class _AnimatedPOEIconState extends State<AnimatedPOEIcon> {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      tooltip: 'P.O.E.',
-      icon: Text(
-        _showDove ? '🕊️' : '🐦‍⬛',
-        style: const TextStyle(fontSize: 20),
-      ),
-      onPressed: widget.onPressed,
-      isSelected: widget.isSelected,
+    return Text(
+      _showDove ? '🕊️' : '🐦‍⬛',
+      style: const TextStyle(fontSize: 20),
     );
   }
 }

@@ -1,9 +1,13 @@
 name: core
-description: "Core utilities package with no external dependencies."
+description: "Core utilities shared across America 2.0 apps."
 version: 0.1.0
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
 
-# no dependencies
+dependencies:
+  flutter:
+    sdk: flutter
+  webview_flutter: ^4.4.0
+  url_launcher: ^6.1.0
 

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:web_2/web_2.dart';
-import 'package:game/game.dart';
-import 'package:we_the_people/we_the_people.dart';
-import 'package:poe/poe.dart';
-import 'package:abe/abe.dart';
-import 'package:about/about.dart';
-import '../widgets/animated_icons.dart';
+import '../config/nav_items.dart';
 
 /// Home page with persistent navigation bar using IndexedStack.
+///
+/// Below [_mobileBreakpoint] the horizontal icon row is replaced by a
+/// hamburger button that slides out a panel (icon + short description per
+/// app) below the app bar, so the hamburger stays visible/tappable as a
+/// toggle to close it again. Settings stays pinned top-right in both
+/// layouts.
 class MyHomePage extends StatefulWidget {
   final Function(ThemeMode) onThemeModeChanged;
   final ThemeMode currentThemeMode;
@@ -22,23 +22,12 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 6;
+const double _mobileBreakpoint = 600;
 
-  late final List<Widget> _pages = [
-    const SizedBox.expand(child: Center(
-      child: Text(
-        'Select an app from the menu above! Have Fun!\n\n 🚧 UNDER CONSTRUCTION 🚧\n🦺not concepts of a plan 😂, \n🏗️ Everything is WELL DETAILED. ^_~ just not on the site yet. \n\n🏗️ I\'m a one man show🎶 at the moment ^_~\n----------------------------------- \n\n~I need funding, DONATIONS go a long way~\n\nDonate to:\n 💸 paypal.me/cacherefresh \n 💸 cashapp: @cacherefresh\n\n - 52% of all donations will go to resolving the actual problem. \nCould you IMAGINE AMERICA if every Political Candidate did this?\nWe would have every child fed, teachers paid well, AMAZING Infrastructure, the Border Walls of Troy, AND Free Healthcare, flying cars, etc etc... \n... but we got rallys, bumperstickers, ads, lawn ornaments of your favorite candidate and some half billion worth of political concerts.\n\n So I\'ll trendset and post receipts (give me time, I\'m human)',
-        style: TextStyle(fontSize: 18),
-      ),
-    )),
-    const Web2View(),
-    const GameView(),
-    const WeThePeopleView(),
-    const POEView(),
-    const ABEView(),
-    const AboutView(),
-  ];
+class _MyHomePageState extends State<MyHomePage> {
+  int _selectedIndex = navItems.indexWhere((e) => e.shortDescription == 'About');
+
+  late final List<Widget> _pages = navItems.map((e) => e.page).toList();
 
   void _onNavButtonPressed(int index) {
     setState(() {
@@ -109,63 +98,101 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Widget _buildNavRow() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < navItems.length; i++)
+          IconButton(
+            tooltip: navItems[i].shortDescription,
+            icon: navItems[i].icon,
+            onPressed: () => _onNavButtonPressed(i),
+            isSelected: _selectedIndex == i,
+          ),
+        const Spacer(),
+        const Flexible(
+          child: Text(
+            'Donate: paypal.me/cacherefresh | cashapp: @cacherefresh',
+            style: TextStyle(fontSize: 14),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Slide-out panel + its scrim, positioned to fill the body (i.e. already
+  /// below the app bar) so the hamburger button above it stays visible and
+  /// tappable as a toggle while the panel is open.
+  Widget _buildSlideOutPanel(BuildContext context) {
+    final panelWidth = MediaQuery.of(context).size.width * 2 / 3;
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 200),
+            opacity: _drawerOpen ? 1 : 0,
+            child: IgnorePointer(
+              ignoring: !_drawerOpen,
+              child: GestureDetector(
+                onTap: () => setState(() => _drawerOpen = false),
+                child: Container(color: Colors.black54),
+              ),
+            ),
+          ),
+        ),
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          top: 0,
+          bottom: 0,
+          left: _drawerOpen ? 0 : -panelWidth,
+          width: panelWidth,
+          child: Material(
+            elevation: 16,
+            child: SafeArea(
+              top: false,
+              child: ListView(
+                children: [
+                  for (var i = 0; i < navItems.length; i++)
+                    ListTile(
+                      leading: navItems[i].icon,
+                      title: Text(navItems[i].shortDescription),
+                      selected: _selectedIndex == i,
+                      onTap: () {
+                        setState(() {
+                          _selectedIndex = i;
+                          _drawerOpen = false;
+                        });
+                      },
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  bool _drawerOpen = false;
+
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < _mobileBreakpoint;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         centerTitle: false,
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              tooltip: 'Home',
-              icon: const Icon(Icons.home),
-              onPressed: () => _onNavButtonPressed(0),
-              isSelected: _selectedIndex == 0,
-            ),
-            IconButton(
-              tooltip: 'Web 2.0',
-              icon: const Icon(Icons.public),
-              onPressed: () => _onNavButtonPressed(1),
-              isSelected: _selectedIndex == 1,
-            ),
-            IconButton(
-              tooltip: 'Game',
-              icon: const Icon(Icons.videogame_asset),
-              onPressed: () => _onNavButtonPressed(2),
-              isSelected: _selectedIndex == 2,
-            ),
-            AnimatedWTPIcon(
-              onPressed: () => _onNavButtonPressed(3),
-              isSelected: _selectedIndex == 3,
-            ),
-            AnimatedPOEIcon(
-              onPressed: () => _onNavButtonPressed(4),
-              isSelected: _selectedIndex == 4,
-            ),
-            IconButton(
-              tooltip: 'A.B.E.',
-              icon: const Icon(Icons.checklist),
-              onPressed: () => _onNavButtonPressed(5),
-              isSelected: _selectedIndex == 5,
-            ),
-            IconButton(
-              tooltip: 'About',
-              icon: const Text('🪶', style: TextStyle(fontSize: 20)),
-              onPressed: () => _onNavButtonPressed(6),
-              isSelected: _selectedIndex == 6,
-            ),
-            const Spacer(),
-            Flexible(
-              child: Text(
-              'Donate: paypal.me/cacherefresh | cashapp: @cacherefresh',
-              style: TextStyle(fontSize: 14), 
-              overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
+        leading: isMobile
+            ? IconButton(
+                tooltip: _drawerOpen ? 'Close menu' : 'Menu',
+                icon: Icon(_drawerOpen ? Icons.close : Icons.menu),
+                onPressed: () => setState(() => _drawerOpen = !_drawerOpen),
+              )
+            : null,
+        title: isMobile ? const Text('America 2.0') : _buildNavRow(),
         actions: [
           IconButton(
             tooltip: 'Settings',
@@ -175,9 +202,17 @@ class _MyHomePageState extends State<MyHomePage> {
           const SizedBox(width: 8),
         ],
       ),
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _pages,
+      // Embedded app iframes are real DOM elements that otherwise swallow
+      // pointer events meant for the panel painted above them, so fully
+      // offstage them (index: null) rather than just hit-test-ignoring them.
+      body: Stack(
+        children: [
+          IndexedStack(
+            index: _drawerOpen ? null : _selectedIndex,
+            children: _pages,
+          ),
+          if (isMobile) _buildSlideOutPanel(context),
+        ],
       ),
     );
   }
