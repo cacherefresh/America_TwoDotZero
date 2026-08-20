@@ -13,7 +13,6 @@ dependencies:
     path: ../core
   markdown_view:
     path: ../markdown_view
-  webview_flutter: ^4.4.0
 
   cupertino_icons: ^1.0.0
 

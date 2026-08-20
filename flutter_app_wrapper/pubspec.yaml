@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   yaml: ^3.1.0
   # local package dependencies
+  core:
+    path: ../packages/core
   web_2:
     path: ../packages/web_2
   game:

@@ -1,4 +1,6 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:core/core.dart';
 import '../config/nav_items.dart';
 
 /// Home page with persistent navigation bar using IndexedStack.
@@ -124,20 +126,32 @@ class _MyHomePageState extends State<MyHomePage> {
   /// Slide-out panel + its scrim, positioned to fill the body (i.e. already
   /// below the app bar) so the hamburger button above it stays visible and
   /// tappable as a toggle while the panel is open.
+  static const _panelCornerRadius = BorderRadius.only(
+    topRight: Radius.circular(16),
+    bottomRight: Radius.circular(16),
+  );
+
   Widget _buildSlideOutPanel(BuildContext context) {
     final panelWidth = MediaQuery.of(context).size.width * 2 / 3;
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // 80% opaque / 20% see-through, tinted light purple in light mode and
+    // dark grey in dark mode, with a matching dark-purple accent border.
+    final panelColor = isDark
+        ? Colors.grey.shade900.withValues(alpha: 0.8)
+        : colorScheme.primaryContainer.withValues(alpha: 0.8);
+    final borderColor = isDark ? colorScheme.primaryContainer : colorScheme.primary;
+
     return Stack(
       children: [
+        // Invisible tap-catcher to close on tap-outside -- fully see-through
+        // so the page stays readable on the portion the panel doesn't cover.
         Positioned.fill(
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 200),
-            opacity: _drawerOpen ? 1 : 0,
-            child: IgnorePointer(
-              ignoring: !_drawerOpen,
-              child: GestureDetector(
-                onTap: () => setState(() => _drawerOpen = false),
-                child: Container(color: Colors.black54),
-              ),
+          child: IgnorePointer(
+            ignoring: !_drawerOpen,
+            child: GestureDetector(
+              onTap: () => setState(() => _drawerOpen = false),
+              child: Container(color: Colors.transparent),
             ),
           ),
         ),
@@ -149,24 +163,43 @@ class _MyHomePageState extends State<MyHomePage> {
           left: _drawerOpen ? 0 : -panelWidth,
           width: panelWidth,
           child: Material(
+            color: Colors.transparent,
             elevation: 16,
-            child: SafeArea(
-              top: false,
-              child: ListView(
-                children: [
-                  for (var i = 0; i < navItems.length; i++)
-                    ListTile(
-                      leading: navItems[i].icon,
-                      title: Text(navItems[i].shortDescription),
-                      selected: _selectedIndex == i,
-                      onTap: () {
-                        setState(() {
-                          _selectedIndex = i;
-                          _drawerOpen = false;
-                        });
-                      },
+            borderRadius: _panelCornerRadius,
+            child: ClipRRect(
+              borderRadius: _panelCornerRadius,
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: panelColor,
+                    borderRadius: _panelCornerRadius,
+                    border: Border(
+                      top: BorderSide(color: borderColor, width: 1.5),
+                      right: BorderSide(color: borderColor, width: 1.5),
+                      bottom: BorderSide(color: borderColor, width: 1.5),
                     ),
-                ],
+                  ),
+                  child: SafeArea(
+                    top: false,
+                    child: ListView(
+                      children: [
+                        for (var i = 0; i < navItems.length; i++)
+                          ListTile(
+                            leading: navItems[i].icon,
+                            title: Text(navItems[i].shortDescription),
+                            selected: _selectedIndex == i,
+                            onTap: () {
+                              setState(() {
+                                _selectedIndex = i;
+                                _drawerOpen = false;
+                              });
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -203,13 +236,17 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       // Embedded app iframes are real DOM elements that otherwise swallow
-      // pointer events meant for the panel painted above them, so fully
-      // offstage them (index: null) rather than just hit-test-ignoring them.
+      // pointer events meant for the panel painted above them, even though
+      // the panel paints on top -- so suppress just their pointer events
+      // (not their visibility) while the panel is open.
       body: Stack(
         children: [
-          IndexedStack(
-            index: _drawerOpen ? null : _selectedIndex,
-            children: _pages,
+          SuppressEmbeddedInteraction(
+            suppress: _drawerOpen,
+            child: IndexedStack(
+              index: _selectedIndex,
+              children: _pages,
+            ),
           ),
           if (isMobile) _buildSlideOutPanel(context),
         ],
