@@ -1,5 +1,6 @@
 library core;
 
+export 'app_meta.dart';
 export 'embedded_web_content.dart';
 
 /// A simple utility example from the core package.

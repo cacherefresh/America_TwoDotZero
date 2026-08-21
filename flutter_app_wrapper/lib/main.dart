@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:core/core.dart';
+import 'config/app_registry.dart';
 import 'pages/home_page.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final apps = await loadInstalledApps();
+  runApp(MyApp(apps: apps));
 }
 
-
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final List<AppMeta> apps;
+
+  const MyApp({super.key, required this.apps});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -21,15 +26,18 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'America 2.0',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple, brightness: Brightness.light),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.deepPurple, brightness: Brightness.light),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple, brightness: Brightness.dark),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.deepPurple, brightness: Brightness.dark),
         useMaterial3: true,
       ),
       themeMode: _themeMode,
       home: MyHomePage(
+        apps: widget.apps,
         onThemeModeChanged: (ThemeMode mode) {
           setState(() {
             _themeMode = mode;

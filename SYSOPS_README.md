@@ -35,7 +35,7 @@ This guide provides detailed instructions for building the America 2.0 Flutter a
 ### Required Accounts & Services
 
 - **GitHub Account**: With access to the repository
-- **GoDaddy Account**: Domain owner with DNS management access
+- **Domain Hosting Account**: Domain owner with DNS management access
 - **cacherefresh.io Domain**: Already registered and active
 
 ### Required Permissions
@@ -62,12 +62,14 @@ flutter pub get
 ```
 
 If you encounter issues with local path dependencies, ensure all packages have `publish_to: none` in their `pubspec.yaml`:
-- `packages/core/pubspec.yaml`
-- `packages/game/pubspec.yaml`
-- `packages/markdown_view/pubspec.yaml`
-- `packages/web_2/pubspec.yaml`
-- `packages/we_the_people/pubspec.yaml`
-- `packages/poe/pubspec.yaml`
+- `packages/common/core/pubspec.yaml`
+- `packages/common/markdown_view/pubspec.yaml`
+- `packages/isolated_apps/game/pubspec.yaml`
+- `packages/isolated_apps/web_2/pubspec.yaml`
+- `packages/isolated_apps/we_the_people/pubspec.yaml`
+- `packages/isolated_apps/poe/pubspec.yaml`
+- `packages/isolated_apps/abe/pubspec.yaml`
+- `packages/isolated_apps/about/pubspec.yaml`
 
 ### Step 3: Build for Web
 
@@ -525,7 +527,7 @@ flutter build web --release
 **Problem: Local path dependencies cause issues**
 ```
 Solution: Verify all packages are in packages/ directory and pubspec.yaml paths are correct
-cat packages/core/pubspec.yaml | grep "publish_to"
+cat packages/common/core/pubspec.yaml | grep "publish_to"
 ```
 
 ### Deployment Issues

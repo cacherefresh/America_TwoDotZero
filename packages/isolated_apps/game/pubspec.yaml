@@ -1,5 +1,5 @@
-name: poe
-description: "P.O.E. - Peace On Earth, a world peace proposal inspired by Edgar Allan Poe."
+name: game
+description: "Game scaffold package depending on core."
 version: 0.1.0
 publish_to: none
 
@@ -10,10 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
   core:
-    path: ../core
+    path: ../../common/core
   markdown_view:
-    path: ../markdown_view
-  url_launcher: ^6.1.0
+    path: ../../common/markdown_view
 
   cupertino_icons: ^1.0.0
 

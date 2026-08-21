@@ -36,22 +36,25 @@ dependencies:
   cupertino_icons: ^1.0.8
   yaml: ^3.1.0
   # local package dependencies
+  # common: shared helpers/utils, as opposed to isolated_apps below
   core:
-    path: ../packages/core
-  web_2:
-    path: ../packages/web_2
-  game:
-    path: ../packages/game
+    path: ../packages/common/core
   markdown_view:
-    path: ../packages/markdown_view
+    path: ../packages/common/markdown_view
+  # isolated_apps: apps hosted in the nav, as opposed to the shared
+  # helpers/utils above (common/core, common/markdown_view)
+  web_2:
+    path: ../packages/isolated_apps/web_2
+  game:
+    path: ../packages/isolated_apps/game
   we_the_people:
-    path: ../packages/we_the_people
+    path: ../packages/isolated_apps/we_the_people
   poe:
-    path: ../packages/poe
+    path: ../packages/isolated_apps/poe
   abe:
-    path: ../packages/abe
+    path: ../packages/isolated_apps/abe
   about:
-    path: ../packages/about
+    path: ../packages/isolated_apps/about
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +81,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/vault/MDs/
+    - assets/list_of_apps_config.yaml
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

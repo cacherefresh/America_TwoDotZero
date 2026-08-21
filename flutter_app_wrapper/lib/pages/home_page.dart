@@ -1,9 +1,13 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:core/core.dart';
-import '../config/nav_items.dart';
+import '../config/app_registry.dart';
 
 /// Home page with persistent navigation bar using IndexedStack.
+///
+/// The app list ([MyHomePage.apps]) is resolved before `runApp` by reading
+/// `assets/list_of_apps_config.yaml` (see `app_registry.dart`) -- this page
+/// just renders whatever it's given, prefixed with the OS's own Home screen.
 ///
 /// Below [_mobileBreakpoint] the horizontal icon row is replaced by a
 /// hamburger button that slides out a panel (icon + short description per
@@ -11,11 +15,13 @@ import '../config/nav_items.dart';
 /// toggle to close it again. Settings stays pinned top-right in both
 /// layouts.
 class MyHomePage extends StatefulWidget {
+  final List<AppMeta> apps;
   final Function(ThemeMode) onThemeModeChanged;
   final ThemeMode currentThemeMode;
 
   const MyHomePage({
     super.key,
+    required this.apps,
     required this.onThemeModeChanged,
     required this.currentThemeMode,
   });
@@ -27,9 +33,12 @@ class MyHomePage extends StatefulWidget {
 const double _mobileBreakpoint = 600;
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = navItems.indexWhere((e) => e.shortDescription == 'About');
+  late final List<AppMeta> _apps = [homeMeta, ...widget.apps];
+  late final List<Widget> _pages = _apps.map((e) => e.page).toList();
+  // Home is always _apps[0] -- see the constructor above.
+  int _selectedIndex = 0;
 
-  late final List<Widget> _pages = navItems.map((e) => e.page).toList();
+  bool _drawerOpen = false;
 
   void _onNavButtonPressed(int index) {
     setState(() {
@@ -104,10 +113,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        for (var i = 0; i < navItems.length; i++)
+        for (var i = 0; i < _apps.length; i++)
           IconButton(
-            tooltip: navItems[i].shortDescription,
-            icon: navItems[i].icon,
+            tooltip: _apps[i].longDescription,
+            icon: _apps[i].icon,
             onPressed: () => _onNavButtonPressed(i),
             isSelected: _selectedIndex == i,
           ),
@@ -140,7 +149,8 @@ class _MyHomePageState extends State<MyHomePage> {
     final panelColor = isDark
         ? Colors.grey.shade900.withValues(alpha: 0.8)
         : colorScheme.primaryContainer.withValues(alpha: 0.8);
-    final borderColor = isDark ? colorScheme.primaryContainer : colorScheme.primary;
+    final borderColor =
+        isDark ? colorScheme.primaryContainer : colorScheme.primary;
 
     return Stack(
       children: [
@@ -184,10 +194,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     top: false,
                     child: ListView(
                       children: [
-                        for (var i = 0; i < navItems.length; i++)
+                        for (var i = 0; i < _apps.length; i++)
                           ListTile(
-                            leading: navItems[i].icon,
-                            title: Text(navItems[i].shortDescription),
+                            leading: _apps[i].icon,
+                            title: Text(_apps[i].shortDescription),
                             selected: _selectedIndex == i,
                             onTap: () {
                               setState(() {
@@ -207,8 +217,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
     );
   }
-
-  bool _drawerOpen = false;
 
   @override
   Widget build(BuildContext context) {

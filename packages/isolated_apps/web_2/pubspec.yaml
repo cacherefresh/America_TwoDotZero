@@ -1,5 +1,5 @@
-name: game
-description: "Game scaffold package depending on core."
+name: web_2
+description: "Web 2.0 scaffold package depending on core."
 version: 0.1.0
 publish_to: none
 
@@ -10,9 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
   core:
-    path: ../core
+    path: ../../common/core
   markdown_view:
-    path: ../markdown_view
+    path: ../../common/markdown_view
 
   cupertino_icons: ^1.0.0
 

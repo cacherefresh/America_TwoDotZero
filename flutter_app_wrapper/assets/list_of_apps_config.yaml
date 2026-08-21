@@ -1,0 +1,14 @@
+# List of installed apps shown in the nav, in this order. Home is the OS's
+# own start screen and isn't listed here -- it's always shown first.
+#
+# To add a new app: create its package, give it an `AppMeta` in a
+# `<package>_config.dart` file, register it in
+# flutter_app_wrapper/lib/config/app_registry.dart, then add its id below.
+# See docs/nav-and-apps.md.
+apps:
+  - id: web_2
+  - id: we_the_people
+  - id: poe
+  - id: abe
+  - id: about
+  - id: game

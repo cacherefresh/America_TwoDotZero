@@ -1,5 +1,5 @@
-name: web_2
-description: "Web 2.0 scaffold package depending on core."
+name: abe
+description: "A.B.E. - American Backlog Enhancement, a project tracking and management application."
 version: 0.1.0
 publish_to: none
 
@@ -10,9 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   core:
-    path: ../core
-  markdown_view:
-    path: ../markdown_view
+    path: ../../common/core
 
   cupertino_icons: ^1.0.0
 
