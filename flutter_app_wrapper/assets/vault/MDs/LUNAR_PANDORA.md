@@ -36,7 +36,7 @@ Some quick reminders from high school science class ^_~:
 | **Deuterium** | 1     | 1        | Heavy Hydrogen (D)        | Seawater (unlimited supply)  | Safe, perfect fusion fuel     |
 | **Tritium** | 1       | 2        | Radioactive Hydrogen      | Special reactors             | Decays into He-3 (~12 years)  |
 
-![Lunar Helium-3 Periodic Table Reaction Example](../vault/images/lunar-pandora-0_helium3explanation.png)
+![Lunar Helium-3 Periodic Table Reaction Example](../images/lunar-pandora-0_helium3explanation.png)
 
 Here is just one way to go about harnessing this:
 
@@ -52,7 +52,7 @@ We grab heavy hydrogen from the ocean and helium-3 from Moon dust. Smash them to
 - **Depth**: Almost all in the **top 2–3 meters** only.  
   **Important:** We do **NOT** have to dig deep — just scrape the surface layer!
   
-![Lunar Helium-3 Mining Concept](../vault/images/lunar-pandora-1_mining-concept.png)
+![Lunar Helium-3 Mining Concept](../images/lunar-pandora-1_mining-concept.png)
 
 ## 4. Detailed Mining Plans
 
