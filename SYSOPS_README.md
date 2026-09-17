@@ -80,12 +80,12 @@ flutter build web --release
 **Build Options:**
 
 - `--release`: Optimizes for production (recommended)
-- `--web-renderer html`: Uses HTML renderer for better compatibility
+- `--wasm`: Compiles to WebAssembly with a JS fallback (replaces the removed `--web-renderer` flag; omit to build CanvasKit/JS only)
 - `--csp`: Enables Content Security Policy for enhanced security
 
 **Full command with optimization:**
 ```bash
-flutter build web --release --web-renderer html
+flutter build web --release
 ```
 
 ### Step 4: Output Location
@@ -209,7 +209,7 @@ set -e
 
 echo "Building Flutter web application..."
 cd flutter_app_wrapper
-flutter build web --release --web-renderer html
+flutter build web --release
 cd ..
 
 echo "Deploying to GitHub Pages..."
@@ -399,7 +399,7 @@ jobs:
       - name: Build Web App
         run: |
           cd flutter_app_wrapper
-          flutter build web --release --web-renderer html
+          flutter build web --release
 
       - name: Create CNAME
         run: echo "cacherefresh.io" > flutter_app_wrapper/build/web/CNAME

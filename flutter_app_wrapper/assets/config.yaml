@@ -39,6 +39,10 @@ web_2:
   description: "Markdown documentation viewer"
   assets_path: assets/vault/MDs/
 
+we_the_people:
+  name: We The People
+  description: "Draft bills and civic proposals"
+
 home:
   name: America 2.0
   description: "A Third Party Movement Platform"

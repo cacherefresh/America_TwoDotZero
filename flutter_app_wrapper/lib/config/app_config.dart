@@ -44,6 +44,10 @@ class AppConfig {
   static String get web2Description => _getPath('web_2.description');
   static String get web2AssetsPath => _getPath('web_2.assets_path');
 
+  /// ==================== WE THE PEOPLE ====================
+  static String get weThePeopleName => _getPath('we_the_people.name');
+  static String get weThePeopleDescription => _getPath('we_the_people.description');
+
   /// ==================== HOME ====================
   static String get appName => _getPath('home.name');
   static String get appDescription => _getPath('home.description');

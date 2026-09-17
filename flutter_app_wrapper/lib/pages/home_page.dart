@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:web_2/web_2.dart';
 import 'package:game/game.dart';
 import 'package:we_the_people/we_the_people.dart';
 import 'package:poe/poe.dart';
 import 'package:abe/abe.dart';
+import '../holographic/holographic_landing_page.dart';
+import '../holographic/holographic_landing_page_fallback.dart';
 import '../widgets/animated_icons.dart';
 
 /// Home page with persistent navigation bar using IndexedStack.
@@ -25,12 +28,9 @@ class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
 
   late final List<Widget> _pages = [
-    const SizedBox.expand(child: Center(
-      child: Text(
-        'Select an app from the menu above! Have Fun!\n\n 🚧 UNDER CONSTRUCTION 🚧\n🦺not concepts of a plan 😂, \n🏗️ Everything is WELL DETAILED. ^_~ just not on the site yet. \n\n🏗️ I\'m a one man show🎶 at the moment ^_~\n----------------------------------- \n\n~I need funding, DONATIONS go a long way~\n\nDonate to:\n 💸 paypal.me/cacherefresh \n 💸 cashapp: @cacherefresh\n\n - 52% of all donations will go to resolving the actual problem. \nCould you IMAGINE AMERICA if every Political Candidate did this?\nWe would have every child fed, teachers paid well, AMAZING Infrastructure, the Border Walls of Troy, AND Free Healthcare, flying cars, etc etc... \n... but we got rallys, bumperstickers, ads, lawn ornaments of your favorite candidate and some half billion worth of political concerts.\n\n So I\'ll trendset and post receipts (give me time, I\'m human)',
-        style: TextStyle(fontSize: 18),
-      ),
-    )),
+    kIsWeb
+        ? const HolographicLandingPage()
+        : const HolographicLandingPageFallback(),
     const Web2View(),
     const GameView(),
     const WeThePeopleView(),
