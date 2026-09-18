@@ -107,10 +107,21 @@ class _HolographicLandingPageState extends State<HolographicLandingPage> {
                   width: viewSize.width,
                   height: canvasHeight,
                   child: Stack(
+                    // The expanded window (if any) must paint last so it
+                    // sits above every collapsed orb, regardless of index.
                     children: [
                       for (var i = 0; i < _slots.length; i++)
+                        if (i != _expandedIndex)
+                          _buildOrb(
+                            i,
+                            viewSize,
+                            canvasHeight,
+                            expandedWidth,
+                            expandedHeight,
+                          ),
+                      if (_expandedIndex != null)
                         _buildOrb(
-                          i,
+                          _expandedIndex!,
                           viewSize,
                           canvasHeight,
                           expandedWidth,
