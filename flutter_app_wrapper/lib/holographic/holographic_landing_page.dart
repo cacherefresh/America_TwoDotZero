@@ -1,20 +1,17 @@
+import 'dart:math' as math;
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:web_2/web_2.dart';
-import 'package:game/game.dart';
-import 'package:we_the_people/we_the_people.dart';
-import 'package:poe/poe.dart';
-import 'package:abe/abe.dart';
 
-import '../config/app_config.dart';
+import '../config/app_registry.dart';
 import 'holo_background_view.dart';
 import 'holographic_scene_controller.dart';
 import 'holographic_window.dart';
 
 /// Immersive sci-fi landing page: a three.js particle/wireframe background
-/// with a floating holographic window for each app. Move the mouse for a
-/// parallax response, scroll to reveal windows further down the canvas,
-/// and click a window to expand its app content.
+/// with a floating holographic window for every app in the top menu, all
+/// visible and clickable without scrolling. Move the mouse for a parallax
+/// response, and click a window to expand its app content.
 class HolographicLandingPage extends StatefulWidget {
   const HolographicLandingPage({super.key});
 
@@ -28,54 +25,36 @@ class _HolographicLandingPageState extends State<HolographicLandingPage> {
   final ScrollController _scrollController = ScrollController();
   int? _expandedIndex;
 
-  static const double _virtualCanvasHeightFactor = 3.2;
+  // The canvas matches the viewport 1:1 so every app orb is visible and
+  // clickable without scrolling. Extra height (below 1.0) is only used as a
+  // safety margin on very short/narrow viewports.
+  static const double _virtualCanvasHeightFactor = 1.0;
 
-  // Fractional (0..1) anchor positions within the virtual canvas.
-  static const List<Offset> _orbAnchors = [
-    Offset(0.2, 0.12),
-    Offset(0.82, 0.28),
-    Offset(0.25, 0.52),
-    Offset(0.78, 0.75),
-    Offset(0.5, 0.92),
-  ];
+  late final List<AppEntry> _apps = buildAppRegistry();
 
   late final List<AppSlot> _slots = [
-    AppSlot(
-      name: AppConfig.web2Name,
-      description: AppConfig.web2Description,
-      glyph: '📖',
-      accentColor: const Color(0xFF00E5FF),
-      child: const Web2View(),
-    ),
-    AppSlot(
-      name: AppConfig.gameName,
-      description: AppConfig.gameDescription,
-      glyph: '🎮',
-      accentColor: const Color(0xFF8A5CFF),
-      child: const GameView(),
-    ),
-    AppSlot(
-      name: AppConfig.weThePeopleName,
-      description: AppConfig.weThePeopleDescription,
-      glyph: '🏛️',
-      accentColor: const Color(0xFFFF5CF0),
-      child: const WeThePeopleView(),
-    ),
-    AppSlot(
-      name: AppConfig.poeName,
-      description: AppConfig.poeDescription,
-      glyph: '🕊️',
-      accentColor: const Color(0xFF5CFFB0),
-      child: const POEView(),
-    ),
-    AppSlot(
-      name: AppConfig.abeName,
-      description: AppConfig.abeDescription,
-      glyph: '📋',
-      accentColor: const Color(0xFFFFD75C),
-      child: const ABEView(),
-    ),
+    for (final app in _apps)
+      AppSlot(
+        name: app.name,
+        description: app.description,
+        glyph: app.orbGlyph,
+        accentColor: app.accentColor,
+        child: app.pageBuilder(),
+      ),
   ];
+
+  /// Evenly spaces orbs around an ellipse centered on the viewport, so a
+  /// new [AppEntry] never needs a hand-picked position.
+  Offset _anchorFor(int index, int total) {
+    if (total == 1) return const Offset(0.5, 0.5);
+    final angle = -math.pi / 2 + (2 * math.pi * index / total);
+    const radiusX = 0.32;
+    const radiusY = 0.28;
+    return Offset(
+      0.5 + radiusX * math.cos(angle),
+      0.5 + radiusY * math.sin(angle),
+    );
+  }
 
   @override
   void initState() {
@@ -156,7 +135,7 @@ class _HolographicLandingPageState extends State<HolographicLandingPage> {
     double expandedHeight,
   ) {
     final expanded = _expandedIndex == index;
-    final anchor = _orbAnchors[index];
+    final anchor = _anchorFor(index, _slots.length);
     final baseLeft = anchor.dx * viewSize.width;
     final baseTop = anchor.dy * canvasHeight;
 

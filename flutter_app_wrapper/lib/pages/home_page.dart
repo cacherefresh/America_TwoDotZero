@@ -1,13 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:web_2/web_2.dart';
-import 'package:game/game.dart';
-import 'package:we_the_people/we_the_people.dart';
-import 'package:poe/poe.dart';
-import 'package:abe/abe.dart';
+import '../config/app_registry.dart';
 import '../holographic/holographic_landing_page.dart';
 import '../holographic/holographic_landing_page_fallback.dart';
-import '../widgets/animated_icons.dart';
 
 /// Home page with persistent navigation bar using IndexedStack.
 class MyHomePage extends StatefulWidget {
@@ -27,15 +22,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
 
+  late final List<AppEntry> _apps = buildAppRegistry();
+
   late final List<Widget> _pages = [
     kIsWeb
         ? const HolographicLandingPage()
         : const HolographicLandingPageFallback(),
-    const Web2View(),
-    const GameView(),
-    const WeThePeopleView(),
-    const POEView(),
-    const ABEView(),
+    for (final app in _apps) app.pageBuilder(),
   ];
 
   void _onNavButtonPressed(int index) {
@@ -122,32 +115,11 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () => _onNavButtonPressed(0),
               isSelected: _selectedIndex == 0,
             ),
-            IconButton(
-              tooltip: 'Web 2.0',
-              icon: const Icon(Icons.public),
-              onPressed: () => _onNavButtonPressed(1),
-              isSelected: _selectedIndex == 1,
-            ),
-            IconButton(
-              tooltip: 'Game',
-              icon: const Icon(Icons.videogame_asset),
-              onPressed: () => _onNavButtonPressed(2),
-              isSelected: _selectedIndex == 2,
-            ),
-            AnimatedWTPIcon(
-              onPressed: () => _onNavButtonPressed(3),
-              isSelected: _selectedIndex == 3,
-            ),
-            AnimatedPOEIcon(
-              onPressed: () => _onNavButtonPressed(4),
-              isSelected: _selectedIndex == 4,
-            ),
-            IconButton(
-              tooltip: 'A.B.E.',
-              icon: const Icon(Icons.checklist),
-              onPressed: () => _onNavButtonPressed(5),
-              isSelected: _selectedIndex == 5,
-            ),
+            for (var i = 0; i < _apps.length; i++)
+              _apps[i].navIconBuilder(
+                () => _onNavButtonPressed(i + 1),
+                _selectedIndex == i + 1,
+              ),
             const Spacer(),
             Flexible(
               child: Text(
