@@ -7,12 +7,13 @@ This guide provides detailed instructions for building the America 2.0 Flutter a
 ## Table of Contents
 
 1. [Prerequisites](#prerequisites)
-2. [Building the Flutter Web App](#building-the-flutter-web-app)
-3. [GitHub Pages Setup](#github-pages-setup)
-4. [Custom Domain Configuration (GoDaddy)](#custom-domain-configuration-godaddy)
-5. [Automated Deployment](#automated-deployment)
-6. [Maintenance & Updates](#maintenance--updates)
-7. [Troubleshooting](#troubleshooting)
+2. [Running the Web App Locally](#running-the-web-app-locally)
+3. [Building the Flutter Web App](#building-the-flutter-web-app)
+4. [GitHub Pages Setup](#github-pages-setup)
+5. [Custom Domain Configuration (GoDaddy)](#custom-domain-configuration-godaddy)
+6. [Automated Deployment](#automated-deployment)
+7. [Maintenance & Updates](#maintenance--updates)
+8. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -32,6 +33,15 @@ This guide provides detailed instructions for building the America 2.0 Flutter a
 
 - **Node.js & npm**: Optional, for build optimization (version 18+)
 
+- **A Chromium-based browser**: Optional but recommended — Chrome, Chromium,
+  Brave or Edge. Only needed for hot reload and Flutter DevTools; see
+  [Running the Web App Locally](#running-the-web-app-locally). Building and
+  deploying need no browser at all, and `./run_web.sh` still runs the app
+  without one.
+  ```bash
+  sudo snap install chromium
+  ```
+
 ### Required Accounts & Services
 
 - **GitHub Account**: With access to the repository
@@ -42,6 +52,71 @@ This guide provides detailed instructions for building the America 2.0 Flutter a
 
 - Repository: Push/merge access to `main` branch
 - GoDaddy: Full DNS and domain management access
+
+---
+
+## Running the Web App Locally
+
+From the repository root:
+
+```bash
+./run_web.sh
+```
+
+Then open <http://localhost:8080> (the script opens your browser for you when
+it can).
+
+| Command | What it does |
+|---|---|
+| `./run_web.sh` | Debug build, auto-opens a browser |
+| `./run_web.sh --release` | Release build — what actually gets deployed |
+| `PORT=9000 ./run_web.sh` | Serve on a different port |
+| `NO_OPEN=1 ./run_web.sh` | Just print the URL, don't launch a browser |
+
+While it runs: `r` hot reload, `R` hot restart, `q` quit.
+
+### Why not just `flutter run -d chrome`?
+
+Flutter's `chrome` device drives the browser over the Chrome DevTools
+Protocol, so it requires a **Chromium-based** browser (Chrome, Chromium,
+Brave, Edge) and refuses to start without one:
+
+```
+[✗] Chrome - develop for the web (Cannot find Chrome executable at google-chrome)
+```
+
+Firefox does not satisfy it. On a machine with only Firefox installed,
+`flutter run -d chrome` therefore fails outright — this is the usual reason
+the web app "won't run" on a fresh Linux box.
+
+`run_web.sh` handles both cases: it uses a Chromium-based browser when one is
+on `PATH`, and otherwise falls back to Flutter's browser-less `web-server`
+device, which just serves the app over HTTP for any browser to open. Note
+that `web-server` is not listed by `flutter devices`, which makes it easy to
+assume web support is broken when it isn't.
+
+**Fallback limitations:** hot *restart* (`R`) works, but hot *reload* and
+Flutter DevTools need a Chromium-based browser. To get the full workflow:
+
+```bash
+sudo snap install chromium
+```
+
+`run_web.sh` picks it up automatically on the next run. You can also point it
+at a specific binary with `CHROME_EXECUTABLE=/path/to/browser ./run_web.sh`.
+
+### Serving a build you already made
+
+`flutter build web --release` writes to `flutter_app_wrapper/build/web`, which
+is a plain static bundle:
+
+```bash
+cd flutter_app_wrapper/build/web
+python3 -m http.server 8000
+```
+
+Open <http://localhost:8000>. Opening `index.html` as a `file://` URL will
+**not** work — the app fetches `assets/` and the three.js modules over HTTP.
 
 ---
 
@@ -80,12 +155,12 @@ flutter build web --release
 **Build Options:**
 
 - `--release`: Optimizes for production (recommended)
-- `--web-renderer html`: Uses HTML renderer for better compatibility
+- `--wasm`: Compiles to WebAssembly with a JS fallback (replaces the removed `--web-renderer` flag; omit to build CanvasKit/JS only)
 - `--csp`: Enables Content Security Policy for enhanced security
 
 **Full command with optimization:**
 ```bash
-flutter build web --release --web-renderer html
+flutter build web --release
 ```
 
 ### Step 4: Output Location
@@ -209,7 +284,7 @@ set -e
 
 echo "Building Flutter web application..."
 cd flutter_app_wrapper
-flutter build web --release --web-renderer html
+flutter build web --release
 cd ..
 
 echo "Deploying to GitHub Pages..."
@@ -399,7 +474,7 @@ jobs:
       - name: Build Web App
         run: |
           cd flutter_app_wrapper
-          flutter build web --release --web-renderer html
+          flutter build web --release
 
       - name: Create CNAME
         run: echo "cacherefresh.io" > flutter_app_wrapper/build/web/CNAME

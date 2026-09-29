@@ -70,7 +70,10 @@ class _Web2ViewState extends State<Web2View> {
               } else if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else {
-                return MarkdownDisplay(markdownText: snapshot.data ?? '');
+                return MarkdownDisplay(
+                  markdownText: snapshot.data ?? '',
+                  sourcePath: selectedFile,
+                );
               }
             },
           ),
