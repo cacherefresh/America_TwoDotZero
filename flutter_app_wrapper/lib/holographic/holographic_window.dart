@@ -150,10 +150,13 @@ class _HolographicWindowState extends State<HolographicWindow>
                     child: Visibility(
                       visible: _isOrb,
                       maintainState: true,
-                      child: Center(
-                        child: Text(
-                          widget.slot.glyph,
-                          style: const TextStyle(fontSize: 28),
+                      child: Tooltip(
+                        message: widget.slot.name,
+                        child: Center(
+                          child: Text(
+                            widget.slot.glyph,
+                            style: const TextStyle(fontSize: 28),
+                          ),
                         ),
                       ),
                     ),

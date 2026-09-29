@@ -245,13 +245,13 @@ class _HolographicLandingPageState extends State<HolographicLandingPage> {
         maintainAnimation: true,
         maintainSize: true,
         maintainInteractivity: false,
-        child: Tooltip(
-          message: _slots[index].name,
-          child: HolographicWindow(
-            slot: _slots[index],
-            mode: mode,
-            onToggle: () => _toggleWindow(index),
-          ),
+        // The name tooltip lives on the orb glyph inside the window, not out
+        // here — wrapping the whole window would pop a tooltip over an entire
+        // full-screen app.
+        child: HolographicWindow(
+          slot: _slots[index],
+          mode: mode,
+          onToggle: () => _toggleWindow(index),
         ),
       ),
     );
