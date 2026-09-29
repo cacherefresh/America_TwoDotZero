@@ -156,6 +156,27 @@ class _HolographicLandingPageState extends State<HolographicLandingPage> {
           onHover: (event) => _handlePointerHover(event, viewSize),
           child: Stack(
             children: [
+              // The three.js canvas is created with `alpha: true` and never
+              // clears to a colour, so it composites onto whatever is behind
+              // it. Without this the Scaffold's own background shows through
+              // and, under a light theme, the glowing orbs and the window's
+              // white text sit on near-white — unreadable. The holographic
+              // layer is designed dark, so it supplies its own backdrop
+              // rather than depending on the active ThemeMode.
+              const Positioned.fill(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color(0xFF0B0E1A),
+                        Color(0xFF05060B),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
               const Positioned.fill(child: HoloBackgroundView()),
               SingleChildScrollView(
                 controller: _scrollController,
@@ -252,6 +273,11 @@ class _HolographicLandingPageState extends State<HolographicLandingPage> {
           slot: _slots[index],
           mode: mode,
           onToggle: () => _toggleWindow(index),
+          // A collapsed orb would otherwise squeeze the app page it keeps
+          // mounted into 120px; lay it out at the size it opens to instead.
+          contentSize: mode == HoloWindowMode.fullscreen
+              ? viewSize
+              : Size(expandedWidth, expandedHeight),
         ),
       ),
     );

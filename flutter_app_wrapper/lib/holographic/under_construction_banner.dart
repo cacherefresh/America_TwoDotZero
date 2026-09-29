@@ -60,10 +60,17 @@ class UnderConstructionBanner extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  _accent.withValues(alpha: 0.18),
-                  Colors.black.withValues(alpha: 0.55),
-                ],
+                // The collapsed strip is two short lines, so it can stay
+                // translucent and let the scene through. The expanded panel
+                // is a wall of text, and orbs drifting behind it made that
+                // text hard to read — so it goes nearly opaque, keeping only
+                // the warm construction tint.
+                colors: expanded
+                    ? const [Color(0xF01C1608), Color(0xFA05060B)]
+                    : [
+                        _accent.withValues(alpha: 0.18),
+                        Colors.black.withValues(alpha: 0.55),
+                      ],
               ),
             ),
             child: Material(

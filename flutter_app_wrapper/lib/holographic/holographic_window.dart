@@ -50,11 +50,23 @@ class HolographicWindow extends StatefulWidget {
     required this.slot,
     required this.mode,
     required this.onToggle,
+    required this.contentSize,
   });
 
   final AppSlot slot;
   final HoloWindowMode mode;
   final VoidCallback onToggle;
+
+  /// Size [slot.child] is laid out at, in every mode.
+  ///
+  /// A collapsed orb is only 120px square, and the child stays mounted
+  /// inside it. Left to inherit the orb's constraints, real app pages get
+  /// laid out in ~38px of usable width and throw overflow errors (POE's
+  /// toolbar row did exactly this). Pinning the content to the size it will
+  /// be *shown* at keeps those layouts valid while collapsed and avoids a
+  /// relayout when the window opens; the orb's own `ClipRRect` hides the
+  /// overhang.
+  final Size contentSize;
 
   @override
   State<HolographicWindow> createState() => _HolographicWindowState();
@@ -91,6 +103,12 @@ class _HolographicWindowState extends State<HolographicWindow>
         : _isWindow
             ? 20.0
             : 0.0;
+    // Full screen is the plain app tab, so it sits on the app's own surface
+    // rather than the landing page's dark backdrop: the app pages are themed
+    // by ThemeMode, and dark text on a hardcoded dark panel is unreadable
+    // under the default light theme. Opaque either way, which is what keeps
+    // the three.js scene from showing through.
+    final surface = Theme.of(context).scaffoldBackgroundColor;
 
     return AnimatedBuilder(
       animation: _driftController,
@@ -116,9 +134,7 @@ class _HolographicWindowState extends State<HolographicWindow>
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: _isFullscreen
-                  // Opaque, so the three.js scene cannot bleed through an
-                  // app page that has its own translucent background.
-                  ? const [Color(0xFF05060B), Color(0xFF05060B)]
+                  ? [surface, surface]
                   : [
                       accent.withValues(alpha: 0.25),
                       Colors.black.withValues(alpha: 0.35),
@@ -167,17 +183,24 @@ class _HolographicWindowState extends State<HolographicWindow>
                       maintainState: true,
                       maintainAnimation: true,
                       maintainSize: true,
-                      child: Column(
-                        children: [
-                          // Always present so [slot.child] keeps a stable
-                          // slot in the Column; it just collapses to zero
-                          // height outside window mode.
-                          Visibility(
-                            visible: _isWindow,
-                            child: _buildTitleBar(context, accent),
-                          ),
-                          Expanded(child: widget.slot.child),
-                        ],
+                      child: OverflowBox(
+                        alignment: Alignment.topLeft,
+                        minWidth: widget.contentSize.width,
+                        maxWidth: widget.contentSize.width,
+                        minHeight: widget.contentSize.height,
+                        maxHeight: widget.contentSize.height,
+                        child: Column(
+                          children: [
+                            // Always present so [slot.child] keeps a stable
+                            // slot in the Column; it just collapses to zero
+                            // height outside window mode.
+                            Visibility(
+                              visible: _isWindow,
+                              child: _buildTitleBar(context, accent),
+                            ),
+                            Expanded(child: widget.slot.child),
+                          ],
+                        ),
                       ),
                     ),
                   ),
