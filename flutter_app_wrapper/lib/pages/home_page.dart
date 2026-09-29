@@ -1,13 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:web_2/web_2.dart';
-import 'package:game/game.dart';
-import 'package:we_the_people/we_the_people.dart';
-import 'package:poe/poe.dart';
-import 'package:abe/abe.dart';
-import 'package:about/about.dart';
-import '../widgets/animated_icons.dart';
+import '../config/app_registry.dart';
+import '../holographic/holographic_landing_page.dart';
+import '../holographic/holographic_landing_page_fallback.dart';
 
-/// Home page with persistent navigation bar using IndexedStack.
+/// Home page with persistent navigation bar over a single landing host.
 class MyHomePage extends StatefulWidget {
   final Function(ThemeMode) onThemeModeChanged;
   final ThemeMode currentThemeMode;
@@ -23,21 +20,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 6;
+  /// 0 selects the landing page; 1..n select `_apps[index - 1]`.
+  int _selectedIndex = 0;
 
-  late final List<Widget> _pages = [
-    const SizedBox.expand(child: Center(
-      child: Text(
-        'Select an app from the menu above! Have Fun!\n\n 🚧 UNDER CONSTRUCTION 🚧\n🦺not concepts of a plan 😂, \n🏗️ Everything is WELL DETAILED. ^_~ just not on the site yet. \n\n🏗️ I\'m a one man show🎶 at the moment ^_~\n----------------------------------- \n\n~I need funding, DONATIONS go a long way~\n\nDonate to:\n 💸 paypal.me/cacherefresh \n 💸 cashapp: @cacherefresh\n\n - 52% of all donations will go to resolving the actual problem. \nCould you IMAGINE AMERICA if every Political Candidate did this?\nWe would have every child fed, teachers paid well, AMAZING Infrastructure, the Border Walls of Troy, AND Free Healthcare, flying cars, etc etc... \n... but we got rallys, bumperstickers, ads, lawn ornaments of your favorite candidate and some half billion worth of political concerts.\n\n So I\'ll trendset and post receipts (give me time, I\'m human)',
-        style: TextStyle(fontSize: 18),
-      ),
-    )),
-    const Web2View(),
-    const GameView(),
-    const WeThePeopleView(),
-    const POEView(),
-    const ABEView(),
-    const AboutView(),
+  late final List<AppEntry> _apps = buildAppRegistry();
+
+  /// Every app's page widget, built exactly once per session and handed to
+  /// the landing host, which is the only thing that mounts them.
+  ///
+  /// The nav bar does not keep a second copy: selecting an app promotes its
+  /// already-mounted window to full screen instead. Guilds/POE/ABE/About
+  /// each register a web iframe in `initState`, so a second copy would mean
+  /// a second live iframe per app loading the same remote site twice.
+  late final List<Widget> _appPages = [
+    for (final app in _apps) app.pageBuilder(),
   ];
 
   void _onNavButtonPressed(int index) {
@@ -124,38 +120,11 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () => _onNavButtonPressed(0),
               isSelected: _selectedIndex == 0,
             ),
-            IconButton(
-              tooltip: 'Web 2.0',
-              icon: const Icon(Icons.public),
-              onPressed: () => _onNavButtonPressed(1),
-              isSelected: _selectedIndex == 1,
-            ),
-            IconButton(
-              tooltip: 'Game',
-              icon: const Icon(Icons.videogame_asset),
-              onPressed: () => _onNavButtonPressed(2),
-              isSelected: _selectedIndex == 2,
-            ),
-            AnimatedWTPIcon(
-              onPressed: () => _onNavButtonPressed(3),
-              isSelected: _selectedIndex == 3,
-            ),
-            AnimatedPOEIcon(
-              onPressed: () => _onNavButtonPressed(4),
-              isSelected: _selectedIndex == 4,
-            ),
-            IconButton(
-              tooltip: 'A.B.E.',
-              icon: const Icon(Icons.checklist),
-              onPressed: () => _onNavButtonPressed(5),
-              isSelected: _selectedIndex == 5,
-            ),
-            IconButton(
-              tooltip: 'About',
-              icon: const Text('🪶', style: TextStyle(fontSize: 20)),
-              onPressed: () => _onNavButtonPressed(6),
-              isSelected: _selectedIndex == 6,
-            ),
+            for (var i = 0; i < _apps.length; i++)
+              _apps[i].navIconBuilder(
+                () => _onNavButtonPressed(i + 1),
+                _selectedIndex == i + 1,
+              ),
             const Spacer(),
             Flexible(
               child: Text(
@@ -175,10 +144,17 @@ class _MyHomePageState extends State<MyHomePage> {
           const SizedBox(width: 8),
         ],
       ),
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _pages,
-      ),
+      body: kIsWeb
+          ? HolographicLandingPage(
+              apps: _apps,
+              appPages: _appPages,
+              focusedIndex: _selectedIndex - 1,
+              onExitFocus: () => _onNavButtonPressed(0),
+            )
+          : HolographicLandingPageFallback(
+              appPages: _appPages,
+              selectedIndex: _selectedIndex,
+            ),
     );
   }
 }

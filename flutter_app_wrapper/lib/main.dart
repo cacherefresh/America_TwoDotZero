@@ -1,7 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'config/app_config.dart';
+import 'holographic/interop/holo_view_factory.dart';
 import 'pages/home_page.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await AppConfig.initialize();
+  if (kIsWeb) {
+    registerHoloViewFactory();
+  }
   runApp(const MyApp());
 }
 
